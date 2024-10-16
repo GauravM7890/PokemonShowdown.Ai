@@ -1,0 +1,107 @@
+# Note: See src/py/config.py for docs.
+name: train
+seed: null
+save_path: experiments/
+agent:
+  type: dqn
+  config:
+    model:
+      state_encoder:
+        input_units:
+          room_status: [64]
+          team_status: [64]
+          volatile: [128]
+          basic: [64]
+          species: [128]
+          types: [128]
+          stats: [128]
+          ability: [128]
+          item: [128]
+          moves: [128]
+        active_units: [256]
+        bench_units: [256]
+        global_units: [256]
+        move_attention: [4, 32]
+        move_pooling_type: attention
+        move_pooling_attention: [4, 32]
+        bench_attention: [8, 32]
+        bench_pooling_type: attention
+        bench_pooling_attention: [8, 32]
+        use_layer_norm: true
+        std_init: 0.5 # NoisyNet.
+      q_value:
+        move_units: [256]
+        switch_units: [256]
+        state_units: [256] # Dueling.
+        dist: 51
+        use_layer_norm: true
+        std_init: 0.5 # NoisyNet.
+    # Uncomment if not using NoisyNet.
+    #exploration:
+    #  decay_type: linear
+    #  start: 1.0
+    #  end: 0.1
+    #  episodes: 5_000
+    experience:
+      n_steps: 2
+      discount_factor: 0.99
+      buffer_size: 5000
+      priority:
+        exponent: 0.5
+        importance: 0.4
+    learn:
+      optimizer:
+        class_name: Adam
+        config:
+          learning_rate: 1.e-4
+        module: keras.optimizers
+      buffer_prefill: 500
+      batch_size: 64
+      steps_per_update: 2
+      steps_per_target_update: 5000
+      steps_per_histogram: 5000
+rollout:
+  num_episodes: 10_000
+  eps_per_eval: 1000
+  eps_per_ckpt: 1000
+  eps_per_prev_update: 1000
+  env:
+    max_turns: 100
+    batch_limit: 1
+    pool:
+      workers: 1
+      per_worker: 1
+      battles_per_log: 1000
+      worker_timeout_ms: 60_000 # 1m
+      sim_timeout_ms: 300_000 # 5m
+    state_type: numpy
+  opponents:
+    - name: previous
+      prob: 0.3
+      type: model
+      model: previous
+eval:
+  env:
+    max_turns: 100
+    batch_limit: 4
+    pool:
+      workers: 4
+      per_worker: 2
+      battles_per_log: 100
+      worker_timeout_ms: 60_000 # 1m
+      sim_timeout_ms: 300_000 # 5m
+    state_type: tensor
+  opponents:
+    - name: previous
+      battles: 100
+      type: model
+      model: previous
+    - name: random
+      battles: 100
+      type: random
+    - name: random_move
+      battles: 100
+      type: random_move
+    - name: max_damage
+      battles: 100
+      type: max_damage

@@ -1,0 +1,107 @@
+{
+  "name": "pokemonshowdown-ai",
+  "version": "0.0.1",
+  "description": "AI project for Pokemon Showdown",
+  "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "main": "dist/ts/psbot/runner.js",
+  "scripts": {
+    "postinstall": "npm install --no-save zeromq@6.0.0-beta.17",
+    "prepare": "husky install",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "psbot": "node -r source-map-support/register dist/ts/psbot/runner.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "npm run test:unit",
+    "test:nocov": "npm run test:unit:nocov",
+    "test:unit": "nyc mocha --spec test/unit.ts",
+    "test:unit:nocov": "mocha --spec test/unit.ts"
+  },
+  "mocha": {
+    "file": "test/setup-chai.ts",
+    "recursive": true,
+    "require": [
+      "source-map-support/register",
+      "ts-node/register"
+    ],
+    "trace-warnings": true,
+    "watch-files": [
+      "src/ts/**/*.test.ts"
+    ]
+  },
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "coverage/",
+      "dist/",
+      "scripts/",
+      "src/ts/config/",
+      "src/ts/**/*.test.ts",
+      "src/ts/**/*.js",
+      "test/",
+      "vendor/"
+    ],
+    "reporter": [
+      "html",
+      "lcov",
+      "text"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taylorhansen/pokemonshowdown-ai"
+  },
+  "keywords": [
+    "pokemon"
+  ],
+  "author": "Taylor Hansen (taylorhansen)",
+  "license": "MIT",
+  "dependencies": {
+    "@pkmn/data": "^0.7.58",
+    "@pkmn/dex": "^0.7.58",
+    "@pkmn/login": "^0.2.0",
+    "@pkmn/protocol": "^0.6.16",
+    "@pkmn/randoms": "^0.7.58",
+    "@pkmn/sim": "^0.7.58",
+    "seedrandom": "^3.0.5",
+    "tmp-promise": "^3.0.3",
+    "websocket": "^1.0.34",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@pkmn/dex-types": "^0.7.58",
+    "@pkmn/types": "^3.0.0",
+    "@types/chai": "^4.3.11",
+    "@types/chai-as-promised": "^7.1.8",
+    "@types/eslint": "^8.44.7",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.18.13",
+    "@types/seedrandom": "^3.0.8",
+    "@types/websocket": "^1.0.10",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
+    "chai": "^4.3.10",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-mocha": "^10.2.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "git-format-staged": "^3.0.0",
+    "husky": "^8.0.3",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0",
+    "prettier": "^3.1.0",
+    "source-map-support": "^0.5.21",
+    "ts-node": "^10.9.1",
+    "typescript": "5.2.2"
+  }
+}
